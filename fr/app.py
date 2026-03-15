@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, session, redirect, url_for, f
 import os
 import numpy as np
 import sys
+from functools import wraps
 
 sys.path.append('..')
 from be.database import init_db, get_user, get_all_users, create_user
