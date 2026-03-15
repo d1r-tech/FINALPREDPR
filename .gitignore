@@ -1,0 +1,17 @@
+data/
+*.npz
+*.npy
+!processed/*.npy  # но обработанные оставляем
+
+__pycache__/
+*.pyc
+.instance/
+instance/
+*.db
+uploads/
+
+*.tmp
+*.log
+.DS_Store
+
+.idea/
