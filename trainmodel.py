@@ -16,14 +16,11 @@ print(f"Классов: {num_classes}")
 print(f"Train X: {train_x.shape}")
 print(f"Valid X: {valid_x.shape}")
 
-# One-hot encoding
 train_y_cat = tf.keras.utils.to_categorical(train_y, num_classes)
 valid_y_cat = tf.keras.utils.to_categorical(valid_y, num_classes)
 
-# 2. СОЗДАНИЕ МОДЕЛИ (простая, но рабочая)
 print("\n2. СОЗДАНИЕ МОДЕЛИ")
 model = models.Sequential([
-    # Уменьшаем размерность в 4 раза для скорости
     layers.MaxPooling1D(pool_size=4, input_shape=(80000, 1)),
 
     layers.Conv1D(16, 3, activation='relu', padding='same'),
@@ -44,7 +41,6 @@ model.compile(optimizer='adam',
 
 model.summary()
 
-# 3. ОБУЧЕНИЕ
 print("\n3. ОБУЧЕНИЕ (5 эпох)...")
 start = time.time()
 
@@ -58,16 +54,13 @@ history = model.fit(
 
 print(f"Обучение завершено за {(time.time() - start) / 60:.1f} минут")
 
-# 4. СОХРАНЕНИЕ
 os.makedirs('models', exist_ok=True)
 model.save('models/classifier.keras')
 np.save('models/label_map.npy', label_map)
 
-# 5. ОЦЕНКА
 val_loss, val_acc = model.evaluate(valid_x, valid_y_cat, verbose=0)
 print(f"\n✅ Точность на валидации: {val_acc:.4f}")
 
-# Сохраняем лог
 import pandas as pd
 
 pd.DataFrame(history.history).to_csv('models/training_log.csv', index=False)

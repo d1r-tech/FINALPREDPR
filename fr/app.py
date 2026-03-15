@@ -10,10 +10,8 @@ app = Flask(__name__)
 app.secret_key = 'olympiad-super-secret-key'
 app.template_folder = 'templates'
 
-# Инициализируем БД при старте
 init_db()
 
-# Загружаем модель (если есть)
 model = None
 label_map = None
 try:
@@ -28,8 +26,6 @@ try:
 except:
     print("⚠️ Ошибка загрузки модели")
 
-
-# ---------- ДЕКОРАТОРЫ ----------
 def login_required(f):
     from functools import wraps
     @wraps(f)
@@ -52,8 +48,6 @@ def admin_required(f):
 
     return decorated
 
-
-# ---------- МАРШРУТЫ ----------
 @app.route('/')
 def index():
     if 'user_id' in session:
@@ -89,8 +83,6 @@ def logout():
     flash('Вы вышли из системы', 'info')
     return redirect(url_for('login'))
 
-
-# ------ АДМИНИСТРАТОР ------
 @app.route('/admin')
 @admin_required
 def admin_dashboard():
@@ -114,13 +106,10 @@ def admin_create_user():
 
     return redirect(url_for('admin_dashboard'))
 
-
-# ------ ПОЛЬЗОВАТЕЛЬ ------
 @app.route('/user')
 @login_required
 def user_dashboard():
     return render_template('user.html', username=session.get('username'))
-
 
 @app.route('/user/upload', methods=['POST'])
 @login_required
@@ -134,34 +123,29 @@ def user_upload():
         flash('Файл не выбран', 'danger')
         return redirect(url_for('user_dashboard'))
 
-    # Сохраняем файл
     os.makedirs('uploads', exist_ok=True)
     file_path = 'uploads/test.npz'
     file.save(file_path)
 
     try:
-        # Загружаем тестовые данные
         test_data = np.load(file_path)
         test_x = test_data['test_x']
         test_y_str = test_data['test_y']
 
-        # Преобразуем метки
         if label_map:
             test_y = np.array([label_map.get(s, 0) for s in test_y_str])
         else:
             test_y = np.zeros(len(test_y_str))
 
-        # Предсказание
         if model:
             predictions = model.predict(test_x, verbose=0)
             pred_classes = np.argmax(predictions, axis=1)
             accuracy = np.mean(pred_classes == test_y)
-            loss = 0.5  # заглушка
+            loss = 0.5
         else:
             accuracy = 0.5
             loss = 0.5
 
-        # Сохраняем в сессии
         session['test_result'] = {
             'accuracy': float(accuracy),
             'loss': float(loss)
@@ -181,7 +165,6 @@ def user_analytics():
     return render_template('analytics.html')
 
 
-# ------ API ДЛЯ ГРАФИКОВ ------
 @app.route('/api/training_log')
 def api_training_log():
     try:
@@ -193,7 +176,6 @@ def api_training_log():
             'val_accuracy': log['val_accuracy'].tolist()
         })
     except:
-        # Заглушка, если нет лога
         return jsonify({
             'epochs': [1, 2, 3, 4, 5],
             'accuracy': [0.5, 0.6, 0.65, 0.7, 0.72],
