@@ -21,11 +21,11 @@ try:
     if os.path.exists('../models/classifier.keras'):
         model = tf.keras.models.load_model('../models/classifier.keras')
         label_map = np.load('../models/label_map.npy', allow_pickle=True).item()
-        print("✅ Модель загружена")
+        print("Модель загружена")
     else:
-        print("⚠️ Модель не найдена")
+        print("Модель не найдена")
 except:
-    print("⚠️ Ошибка загрузки модели")
+    print("Ошибка загрузки модели")
 
 def login_required(f):
     from functools import wraps

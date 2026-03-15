@@ -1,7 +1,7 @@
 import numpy as np
 import os
 
-print("1. ЗАГРУЗКА Data.npz")
+print("1. Data.npz")
 data = np.load('data/Data.npz')
 
 print("Ключи:", data.files)
@@ -16,7 +16,7 @@ print(f"Train Y: {len(train_y_str)} записей")
 print(f"Valid X: {valid_x.shape}")
 print(f"Valid Y: {len(valid_y_str)} записей")
 
-print("\n2. ВОССТАНОВЛЕНИЕ МЕТОК")
+print("\n2. восстановление меток")
 unique_strings = np.unique(train_y_str)
 label_map = {s: i for i, s in enumerate(unique_strings)}
 train_y = np.array([label_map[s] for s in train_y_str])

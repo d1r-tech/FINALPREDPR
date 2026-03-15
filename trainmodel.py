@@ -59,9 +59,9 @@ model.save('models/classifier.keras')
 np.save('models/label_map.npy', label_map)
 
 val_loss, val_acc = model.evaluate(valid_x, valid_y_cat, verbose=0)
-print(f"\n✅ Точность на валидации: {val_acc:.4f}")
+print(f"\nТочность на валидации: {val_acc:.4f}")
 
 import pandas as pd
 
 pd.DataFrame(history.history).to_csv('models/training_log.csv', index=False)
-print("✅ Модель сохранена в models/classifier.keras")
+print("Модель сохранена в models/classifier.keras")
