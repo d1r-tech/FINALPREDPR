@@ -108,6 +108,16 @@
                 <h3>Распределение классов (обучающая выборка)</h3>
                 <canvas id="chart2"></canvas>
             </div>
+
+            <div class="graph-card">
+                <h3>Топ-5 классов в валидации</h3>
+                <canvas id="chart3"></canvas>
+            </div>
+
+            <div class="graph-card">
+                <h3>Точность по каждой тестовой записи</h3>
+                <canvas id="chart4"></canvas>
+            </div>
         </div>
     </div>
 
@@ -190,6 +200,41 @@
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') closeModal();
         });
+
+
+        fetch('/api/test_accuracy_per_item')
+            .then(r => r.json())
+            .then(data => {
+                new Chart(document.getElementById('chart4'), {
+                    type: 'bar',
+                    data: {
+                        labels: data.items.map(i => `#${i+1}`),
+                        datasets: [{
+                            label: 'Точность',
+                            data: data.accuracy,
+                            backgroundColor: 'rgba(75, 192, 192, 0.7)'
+                        }]
+                    },
+                    options: {
+                        scales: { y: { min: 0, max: 1 } }
+                    }
+                });
+            });
+        fetch('/api/top5_classes')
+            .then(r => r.json())
+            .then(data => {
+                new Chart(document.getElementById('chart3'), {
+                    type: 'bar',
+                    data: {
+                        labels: data.labels,
+                        datasets: [{
+                            label: 'Количество записей',
+                            data: data.counts,
+                            backgroundColor: 'rgba(255, 159, 64, 0.7)'
+                        }]
+                    }
+                });
+            });
     </script>
 </body>
 </html>
